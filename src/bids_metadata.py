@@ -14,10 +14,17 @@ The task -> interface mapping mirrors the official kit
 (``tracks/bci_decoding/datasets/bci_studies.py``, ``_PROTEUS_INTERFACES``).
 """
 
+import json
 import re
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pandas as pd
+
+# Release the official kit uses ("NEMAR nm000290 v1.0.0", bci_studies.py).
+DATASET_REPO = "nemarDatasets/nm000290"
+DATASET_REF = "v1.0.0"
 
 CLASSES = ("mi", "sub", "word")  # index = official class id (0, 1, 2)
 
@@ -29,6 +36,35 @@ INTERFACES = {
 }
 
 _ENTITY = re.compile(r"(sub|ses|task|run)-([A-Za-z0-9]+)")
+
+
+def fetch_metadata(dest, ref=DATASET_REF, repo=DATASET_REPO):
+    """Download the dataset's ``.tsv`` / ``.json`` / ``.md`` files, no EEG.
+
+    Files come from the GitHub mirror of the NEMAR release, pinned to ``ref``
+    (a tag or commit), and keep their BIDS paths under ``dest``. Existing
+    files are overwritten. Returns the number of files written.
+    """
+    api = f"https://api.github.com/repos/{repo}/git/trees/{ref}?recursive=1"
+    with urllib.request.urlopen(api) as resp:
+        tree = json.load(resp)
+    if tree.get("truncated"):
+        raise RuntimeError("GitHub tree listing truncated; files would be missed")
+    paths = [item["path"] for item in tree["tree"]
+             if item["type"] == "blob"
+             and item["path"].endswith((".tsv", ".json", ".md"))
+             and not item["path"].startswith(".")]
+    dest = Path(dest)
+
+    def get(path):
+        target = dest / path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(
+            f"https://raw.githubusercontent.com/{repo}/{ref}/{path}", target)
+
+    with ThreadPoolExecutor(8) as pool:
+        list(pool.map(get, paths))
+    return len(paths)
 
 
 def parse_entities(filename):

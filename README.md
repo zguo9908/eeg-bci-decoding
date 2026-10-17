@@ -38,5 +38,6 @@ pytest
 
 ## Status
 - [x] Scaffold
-- [x] Data exploration: BIDS metadata (subjects, sessions, runs, events) — `src/bids_metadata.py`
+- [x] Data exploration: BIDS metadata (subjects, sessions, runs, events) — `src/bids_metadata.py`,
+      `notebooks/01_bids_metadata.ipynb`
 - [ ] Reproduce the official split and audit it
