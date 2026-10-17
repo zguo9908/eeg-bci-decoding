@@ -1,0 +1,29 @@
+# Data never goes in git: it is large, licensed separately (CC BY 4.0 on NEMAR),
+# and re-downloadable. Keep it under data/ or the benchopt data path.
+data/
+*.fif
+*.edf
+*.bdf
+*.vhdr
+*.eeg
+*.set
+
+# Training outputs and packaged submissions (re-creatable from code + config)
+outputs/
+experiments/**/runs/
+submission/*.zip
+*.ckpt
+*.pt
+*.joblib
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+
+# OS / editor
+.DS_Store
+.vscode/
+.claude/settings.local.json

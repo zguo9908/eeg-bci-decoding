@@ -1,0 +1,10 @@
+[project]
+name = "eeg-bci-decoding"
+version = "0.0.1"
+description = "Reproducible EEG/BCI decoding for Neural Interfaces 2026 Track 2 (PROTEUS)"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+# Code lives in src/ and is imported as `from src import evaluation`.
+pythonpath = ["."]
+testpaths = ["tests"]

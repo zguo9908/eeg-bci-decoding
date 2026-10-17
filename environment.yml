@@ -1,0 +1,34 @@
+# Mirrors the official kit's environment so local results match Codabench:
+#   - python=3.12: kit README (`conda create ... python=3.12`); tools/Dockerfile
+#     notes "neuralset needs >= 3.12".
+#   - pip block: copied from the kit's requirements.txt at commit a66bc23,
+#     keeping its exact pins (the four neuroai packages + exca) and its
+#     deliberately unpinned packages.
+# After creating the env, record what was actually resolved:
+#   pip freeze > requirements-lock.txt
+# so unpinned packages (torch, mne, moabb, ...) are reproducible later.
+name: eeg-bci
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      # --- from 2026-competition/requirements.txt (a66bc23) ---
+      - benchopt>=1.10
+      - pandas
+      - scikit-learn
+      - torch
+      - neuralset==0.4.0
+      - neuralfetch==0.4.0
+      - neuraltrain==0.4.0
+      - neuralbench==0.4.0
+      - exca==0.5.29
+      - moabb
+      - mne
+      - braindecode
+      - nemar-py>=0.3.1
+      # --- additions for this project (not in the kit) ---
+      - pytest
+      - jupyterlab
+      - matplotlib
