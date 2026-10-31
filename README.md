@@ -30,14 +30,31 @@ data/           local data (git-ignored)
 
 ## Setup
 ```bash
+git clone --recursive https://github.com/zguo9908/eeg-bci-decoding.git
+# (already cloned without --recursive?  git submodule update --init)
 conda env create -f environment.yml
 conda activate eeg-bci
-pip freeze > requirements-lock.txt   # record resolved versions
-pytest
+scripts/prepare_data.sh               # ~1.6 GB download, 2.3 GB on disk, into data/
+pytest -m "not integration"           # fast unit tests
+pytest -m integration                 # checks against the official kit + data
 ```
+
+The official competition kit is a git submodule at `external/2026-competition`,
+pinned to commit `a66bc23` and never edited. `requirements-lock.txt` records the
+resolved package versions.
+
+## Official public split (fact, read from the kit)
+| split | subjects | windows |
+|---|---|---|
+| train | P01, P02, P03, P06, P07, P10 (3 sessions) | 1521 |
+| val   | P05, P08 | 379 |
+| test  | P04 (3 sessions), P09 | 755 |
+
+`src.splits.assert_no_test_subjects` must guard every development step.
 
 ## Status
 - [x] Scaffold
 - [x] Data exploration: BIDS metadata (subjects, sessions, runs, events) — `src/bids_metadata.py`,
       `notebooks/01_bids_metadata.ipynb`
-- [ ] Reproduce the official split and audit it
+- [x] Official kit as pinned submodule; data prepared through it (`scripts/prepare_data.sh`)
+- [x] Reproduce the official split and audit it — `src/splits.py`

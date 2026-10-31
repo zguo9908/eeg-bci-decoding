@@ -21,7 +21,9 @@ leaderboard score.
   `_motor_imagery_stream` config, independent of benchopt's `seed`).
 - **Test-split subjects are never used** for training, normalization
   statistics, feature selection, hyperparameter choice, or model selection.
-  The warm-up test labels are public, so the only safeguard is our code.
+  The warm-up test labels are public, so the only safeguard is our code:
+  call `src.splits.assert_no_test_subjects` on every development subject set.
+  Test subjects: P04, P09 (`src/splits.py`, verified against the kit).
 - Model selection uses train/validation subjects only.
 - Evaluation mirrors the official contract: one window at a time (`B = 1`)
   in recording order, a fresh model copy per subject x session stream, no

@@ -1,0 +1,3 @@
+[submodule "external/2026-competition"]
+	path = external/2026-competition
+	url = https://github.com/neural-interfaces26/2026-competition.git

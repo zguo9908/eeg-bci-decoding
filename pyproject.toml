@@ -8,3 +8,4 @@ requires-python = ">=3.12"
 # Code lives in src/ and is imported as `from src import evaluation`.
 pythonpath = ["."]
 testpaths = ["tests"]
+markers = ["integration: needs the prepared data (scripts/prepare_data.sh); slow"]
